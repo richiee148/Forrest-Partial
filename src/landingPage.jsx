@@ -1,4 +1,5 @@
 import { ShieldCheck, User, Users, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import pageBackground from "./assets/page_background.jpeg";
 import logo from "./assets/logo.jpg";
 
@@ -29,6 +30,8 @@ const ROLES = [
 ];
 
 export default function LoginRoleSelector() {
+  const navigate = useNavigate();
+
   return (
     <div
       className="min-h-screen w-full flex items-center justify-center bg-white bg-cover bg-center bg-no-repeat p-6"
@@ -45,9 +48,11 @@ export default function LoginRoleSelector() {
               <button
                 key={id}
                 type="button"
-                onClick={() => {
-                  window.location.href = `/login/${id}`;
-                }}
+               onClick={() => {
+                    if (id === "customer") {
+                      navigate("/CustomerSignUp");
+                    }
+                  }}
                 className="w-full flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-6 text-left shadow-sm hover:shadow-md hover:bg-white transition"
               >
                 <div className={`w-10 h-10 shrink-0 rounded-lg ${color} flex items-center justify-center`}>
