@@ -13,18 +13,16 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
 
-        {/* Landing Page - FIRST PAGE */}
-        <Route path="/" element={<LandingPage />} />
+        
+        <Route path="/landingPage" element={<LandingPage />} />
 
-        {/* Customer Pages */}
         <Route path="/CustomerSignUp" element={<CustomerSignUp />} />
         <Route path="/CustomerLogIn" element={<CustomerLogIn />} />
 
-        {/* Dashboard */}
+       
         <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* Any unknown URL → Landing Page */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/landingPage" replace />} />
 
       </Routes>
     </BrowserRouter>

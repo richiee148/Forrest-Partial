@@ -50,11 +50,14 @@ function CustomerSignUp() {
       // Replace this with your actual signup request
       console.log(formData)
 
-      setStatus({
-        loading: false,
-        error: '',
-        success: 'Account created successfully!'
-      })
+            setStatus({
+          loading: false,
+          error: '',
+          success: 'Account created successfully!'
+        })
+
+        navigate("/dashboard")
+
     } catch (err) {
       console.error('Sign-up error:', err)
 
@@ -79,11 +82,13 @@ function CustomerSignUp() {
 
       console.log('Google user:', result.user)
 
-      setStatus({
+            setStatus({
         loading: false,
         error: '',
         success: `Welcome, ${result.user.displayName}!`
       })
+
+navigate("/dashboard")
     } catch (error) {
       console.error('Google sign-in error:', error)
 
