@@ -1,6 +1,6 @@
 import { ShieldCheck, User, Users, ChevronRight } from "lucide-react";
-import pageBackground from "../assets/page_background.jpeg";
-import logo from "../assets/logo.jpg";
+import pageBackground from "./assets/page_background.jpeg";
+import logo from "./assets/logo.jpg";
 
 
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Header from "../components/Header.jsx";
-import Sidebar from "../components/sidebar.jsx";
+
+import Header from "./components/Header.jsx";
+import Sidebar from "./components/sidebar.jsx";
 
 const STAT_SLOTS = ["Today's reservations", "Occupied capsules", "Available capsules", "Revenue today"];
 
