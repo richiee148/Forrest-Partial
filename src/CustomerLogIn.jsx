@@ -2,7 +2,8 @@ import { useState } from 'react'
 import {Eye, EyeOff, Mail, Lock} from 'lucide-react'
 import {useNavigate} from 'react-router-dom'
 import './index.css'
-
+import { signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider } from './firebase'
 
 //Stores information in  the database
 function CustomerLogIn() {
@@ -16,6 +17,25 @@ function CustomerLogIn() {
   })
     const navigate = useNavigate();
 
+    // Handles Google Login authentication
+  const handleGoogleLogin = async () => {
+
+  try {
+    const result = await signInWithPopup(auth, googleProvider)
+
+    console.log("Google user:", result.user)
+
+    alert(`Welcome back, ${result.user.displayName}!`)
+
+  } catch (error) {
+
+    console.error("Google login error:", error)
+
+    alert("Google login failed. Please try again.")
+
+  }
+
+}
 
   const [showPassword, setShowPassword] = useState(false)
   const [status, setStatus] = useState({ loading: false, error: '', success: '' })
@@ -158,14 +178,20 @@ function CustomerLogIn() {
                         <div className="flex-1 h-px bg-gray-200"/>
                     </div>
 
+                    {/* Google Login Button */}
                     <button
-                        type="button"
-                        className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-2"
-                        >
-                        <img src="src/assets/G-logo.png" alt="Google Icon" className="google-icon h-4 w-4" />
-                        Continue with Google
-                
-                    </button>
+                      type="button"
+                      onClick={handleGoogleLogin}
+                      className="google-login-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition"
+                    >
+                      <img
+                        src="src/assets/G-logo.png"
+                        alt="Google Icon"
+                        className="h-4 w-4"
+                      />
+
+                      Continue with Google
+                   </button>
                     
                 </form>
 
