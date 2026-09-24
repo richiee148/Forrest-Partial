@@ -1,15 +1,12 @@
+
 import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react'
 import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from './firebase'
-import './index.css'
 import { useNavigate } from 'react-router-dom'
+import './index.css'
 
-
-// Stores information in the database
 function CustomerSignUp() {
-  
-  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -19,14 +16,17 @@ function CustomerSignUp() {
     terms: false
   })
 
+  const navigate = useNavigate()
+
   const [showPassword, setShowPassword] = useState(false)
+
   const [status, setStatus] = useState({
     loading: false,
     error: '',
     success: ''
   })
 
-  /* use to handle changes when the user inputs in the fields */
+  // Handle changes when the user inputs in the fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
 
@@ -36,10 +36,15 @@ function CustomerSignUp() {
     })
   }
 
-  // Handles form submission
+  // Handle normal form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus({ loading: true, error: '', success: '' })
+
+    setStatus({
+      loading: true,
+      error: '',
+      success: ''
+    })
 
     try {
       // Replace this with your actual signup request
@@ -51,6 +56,8 @@ function CustomerSignUp() {
         success: 'Account created successfully!'
       })
     } catch (err) {
+      console.error('Sign-up error:', err)
+
       setStatus({
         loading: false,
         error: 'Something went wrong. Please try again.',
@@ -59,9 +66,13 @@ function CustomerSignUp() {
     }
   }
 
-  // Handles Google Sign-In
+  // Handle Google Sign-Up
   const handleGoogleSignUp = async () => {
-    setStatus({ loading: true, error: '', success: '' })
+    setStatus({
+      loading: true,
+      error: '',
+      success: ''
+    })
 
     try {
       const result = await signInWithPopup(auth, googleProvider)
@@ -84,9 +95,7 @@ function CustomerSignUp() {
     }
   }
 
-  /* for the forms and inputs */
-  const labelClass = "text-sm font-semibold text-gray-800"
-
+  // Forms and inputs
   const inputClass =
     "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-800"
 
@@ -102,10 +111,10 @@ function CustomerSignUp() {
     >
       <div className="absolute inset-0 backgroundImage: pointer-events-none"></div>
 
-      {/* kani is container ni left and right card */}
+      {/* Container for left and right card */}
       <div className="w-full max-w-5xl h-[600px] flex flex-col md:flex-row items-stretch bg-white/95 rounded-2xl shadow-xl overflow-hidden border border-green-950">
 
-        {/* this is for the left card */}
+        {/* LEFT CARD */}
         <div
           style={{ flex: 0.8 }}
           className="signup-left-card relative bg-white/90 rounded-2xl p-8 md:p-6 flex flex-col justify-center"
@@ -124,8 +133,10 @@ function CustomerSignUp() {
             className="signup-form flex flex-col gap-3"
           >
 
+            {/* NAME */}
             <div className="Name-group grid grid-cols-2 gap-4">
 
+              {/* FIRST NAME */}
               <div className="flex flex-col gap-1 mb-0.9">
                 <label
                   htmlFor="firstName"
@@ -134,18 +145,26 @@ function CustomerSignUp() {
                   First Name
                 </label>
 
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  placeholder="First Name"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <User
+                    size={18}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
+                    className={`${inputClass} pl-10`}
+                  />
+                </div>
               </div>
 
+              {/* LAST NAME */}
               <div className="flex flex-col gap-1 mb-0.9">
                 <label
                   htmlFor="lastName"
@@ -154,20 +173,28 @@ function CustomerSignUp() {
                   Last Name
                 </label>
 
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Last Name"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <User
+                    size={18}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
+                    className={`${inputClass} pl-10`}
+                  />
+                </div>
               </div>
 
             </div>
 
+            {/* EMAIL */}
             <div className="flex flex-col gap-1 mb-0.9">
               <label
                 htmlFor="email"
@@ -176,18 +203,26 @@ function CustomerSignUp() {
                 Email
               </label>
 
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
+              <div className="relative">
+                <Mail
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className={`${inputClass} pl-10`}
+                />
+              </div>
             </div>
 
+            {/* USERNAME */}
             <div className="flex flex-col gap-1 mb-0.9">
               <label
                 htmlFor="username"
@@ -196,18 +231,26 @@ function CustomerSignUp() {
                 Username
               </label>
 
-              <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="Username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
+              <div className="relative">
+                <User
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  className={`${inputClass} pl-10 pr-10`}
+                />
+              </div>
             </div>
 
+            {/* PASSWORD */}
             <div className="flex flex-col gap-1 mb-0.9">
 
               <label
@@ -217,8 +260,12 @@ function CustomerSignUp() {
                 Password
               </label>
 
-              {/* Password input with eye button */}
               <div className="relative">
+
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
 
                 <input
                   type={showPassword ? "text" : "password"}
@@ -228,7 +275,7 @@ function CustomerSignUp() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className={`${inputClass} pr-10`}
+                  className={`${inputClass} pr-10 pl-10`}
                 />
 
                 <button
@@ -236,7 +283,7 @@ function CustomerSignUp() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-800"
                 >
-                  {showPassword ? <EyeOff /> : <Eye />}
+                  {showPassword ? <Eye /> : <EyeOff />}
                 </button>
 
               </div>
@@ -245,7 +292,7 @@ function CustomerSignUp() {
                 Use 8+ characters with a mix of letters, numbers, and symbols
               </h4>
 
-              {/* Terms and Privacy checkbox */}
+              {/* TERMS */}
               <div className="flex items-start gap-2">
 
                 <input
@@ -269,18 +316,21 @@ function CustomerSignUp() {
 
             </div>
 
+            {/* ERROR MESSAGE */}
             {status.error && (
-              <p className="signup-error text-xs text-red-600">
+              <p className="login-error text-s text-red-600">
                 {status.error}
               </p>
             )}
 
+            {/* SUCCESS MESSAGE */}
             {status.success && (
-              <p className="signup-success text-xs text-green-700">
+              <p className="login-success text-s text-green-700">
                 {status.success}
               </p>
             )}
 
+            {/* SIGN UP BUTTON */}
             <button
               type="submit"
               disabled={status.loading}
@@ -289,6 +339,7 @@ function CustomerSignUp() {
               {status.loading ? 'Signing Up...' : 'Sign Up'}
             </button>
 
+            {/* DIVIDER */}
             <div className="flex items-center gap-3 my-1">
               <div className="flex-1 h-px bg-gray-200" />
 
@@ -299,12 +350,12 @@ function CustomerSignUp() {
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
-            {/* Google Sign-Up Button */}
+            {/* GOOGLE SIGN-UP */}
             <button
               type="button"
               onClick={handleGoogleSignUp}
               disabled={status.loading}
-              className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-3 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <img
                 src="src/assets/G-logo.png"
@@ -315,25 +366,27 @@ function CustomerSignUp() {
               {status.loading
                 ? 'Connecting to Google...'
                 : 'Continue with Google'}
+
             </button>
 
           </form>
 
-          {/* Redirect user to Customer Login page */}
+          {/* LOGIN REDIRECT */}
           <button
-          type="button"
-          onClick={() => navigate('/CustomerLogIn')}
-          className="text-xs text-green-700 hover:text-green-800 transition"
+            type="button"
+            onClick={() => navigate("/CustomerLogIn")}
+            className="text-xs text-green-700 hover:text-green-800 transition"
           >
-          <label className="form-label text-gray-600 cursor-pointer">
-            Already have an account?
-          </label>
+            <span className="text-gray-600">
+              Already have an account?{" "}
+            </span>
 
-          {' '}Log In
+            Log In
           </button>
+
         </div>
 
-        {/* Your container for the right card */}
+        {/* RIGHT CARD */}
         <div
           style={{ flex: 0.4 }}
           className="relative overflow-hidden rounded-r-2xl px-8 pb-8 flex flex-col justify-start"
@@ -367,7 +420,9 @@ function CustomerSignUp() {
               Find your focus.
             </h2>
 
-            <h3 className="text-s text-white opacity-90">Focus. Connect. Grow</h3>
+            <h3 className="text-s text-white opacity-90">
+              Focus. Connect. Grow
+            </h3>
 
             <div className="mt-6 space-y-1">
 
@@ -394,8 +449,10 @@ function CustomerSignUp() {
         </div>
 
       </div>
+
     </div>
   )
 }
 
 export default CustomerSignUp
+
