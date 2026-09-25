@@ -1,32 +1,17 @@
 import { useState } from 'react'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Eye, EyeOff, Mail, Lock, KeyRound } from 'lucide-react'
 import './index.css'
-import { signInWithPopup } from 'firebase/auth'
-import { auth, googleProvider } from './firebase'
-import backgroundImage from './assets/page_background.jpg'
-import logoImage from './assets/logo.jpg'
 import googleImage from './assets/G-logo.png'
+import logoImage from './assets/logo.jpg'
+import backgroundImage from './assets/page_background.jpg'
 
 // Stores information in the database
-function CustomerLogIn() {
+function CustomerSignUp() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    adminCode: '',
   })
-  const navigate = useNavigate()
-
-  // Handles Google Login authentication
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider)
-      console.log("Google user:", result.user)
-      alert(`Welcome back, ${result.user.displayName}!`)
-    } catch (error) {
-      console.error("Google login error:", error)
-      alert("Google login failed. Please try again.")
-    }
-  }
 
   const [showPassword, setShowPassword] = useState(false)
   const [status, setStatus] = useState({ loading: false, error: '', success: '' })
@@ -46,7 +31,7 @@ function CustomerLogIn() {
     setStatus({ loading: true, error: '', success: '' })
 
     try {
-    
+      // Replace this with your actual login request (e.g. fetch/axios call)
       console.log(formData)
 
       setStatus({ loading: false, error: '', success: 'Logged in successfully!' })
@@ -56,7 +41,7 @@ function CustomerLogIn() {
   }
 
   const inputClass =
-    "w-full border border-gray-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-green-800"
+    "w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-800"
 
   return (
     <div
@@ -74,36 +59,36 @@ function CustomerLogIn() {
       <div className="relative w-full max-w-5xl h-[600px] flex flex-col md:flex-row items-stretch bg-white/95 rounded-2xl shadow-xl overflow-hidden border border-green-950">
 
         {/* left card */}
-        <div style={{ flex: 0.8 }} className="login-left-card relative bg-white/90 rounded-2xl p-8 md:p-6 flex flex-col justify-center">
+        <div style={{ flex: 0.8 }} className="signup-left-card relative bg-white/90 rounded-2xl p-8 md:p-6 flex flex-col justify-center">
 
-          <h2 className="text-2xl font-bold text-green-800 mb-1 -mt-13">Welcome back, Customer!</h2>
-          <p className="text-sm text-gray-500 mt-2 mb-9">
+          <h2 className="text-2xl font-bold text-green-800 mb-1 mt-4">Welcome, Administrator!</h2>
+          <p className="text-sm text-gray-500 mt-2 mb-4">
             Enter your credentials to continue to your study space!
           </p>
 
-          <form onSubmit={handleSubmit} className="login-form flex flex-col gap-3">
+          <form onSubmit={handleSubmit} className="signup-form flex flex-col gap-3">
 
-            <div className="flex flex-col gap-2 mb-5 mt-4">
+            <div className="flex flex-col gap-1 mb-0.9">
               <label htmlFor="email" className="text-xs font-semibold text-green-800">Email</label>
               <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="youremail@gmail.com"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className={`${inputClass} pl-10`}
+                  className={inputClass}
                 />
               </div>
             </div>
 
-            <div className="flex flex-col gap-1 mb-2">
+            <div className="flex flex-col gap-1 mb-0.9">
               <label htmlFor="password" className="text-xs font-semibold text-green-800">Password</label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
@@ -112,25 +97,33 @@ function CustomerLogIn() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className={`${inputClass} pl-10 pr-10`}
+                  className={`${inputClass} pr-10`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-800"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            <div className="flex justify-end mb-6">
-              <Link
-                to="/reset-password"
-                className="text-xs font-medium text-green-800 hover:underline"
-              >
-                Forgot Password?
-              </Link>
+            <div className="flex flex-col gap-1 mb-0.9">
+              <label htmlFor="adminCode" className="text-xs font-semibold text-green-800">Admin Code</label>
+              <div className="relative">
+                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  id="adminCode"
+                  name="adminCode"
+                  placeholder="Admin Code"
+                  value={formData.adminCode}
+                  onChange={handleChange}
+                  required
+                  className={inputClass}
+                />
+              </div>
             </div>
 
             {status.error && (
@@ -148,33 +141,21 @@ function CustomerLogIn() {
               {status.loading ? 'Logging In...' : 'Log In'}
             </button>
 
-            <div className="flex items-center gap-3 my-1 mt-4 mb-3">
-              <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-xs text-gray-400">or login with</span>
-              <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex items-center gap-3 my-1">
+              <div className="flex-1 h-px bg-gray-300"></div>
+              <span className="text-xs text-gray-400">or</span>
+              <div className="flex-1 h-px bg-gray-300"></div>
             </div>
 
-            {/* Google Login Button */}
             <button
               type="button"
-              onClick={handleGoogleLogin}
-              className="google-login-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition"
+              className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-2"
             >
-              <img src={googleImage} alt="Google Icon" className="h-4 w-4" />
+              <img src={googleImage} alt="Google Icon" className="google-icon h-4 w-4" />
               Continue with Google
             </button>
 
           </form>
-
-          <button
-            type="button"
-            onClick={() => navigate("/CustomerSignUp")}
-            className="text-xs text-green-700 hover:text-green-800 transition mt-4"
-          >
-            <span className="text-gray-600">Does not have an account? </span>
-            Sign up
-          </button>
-
         </div>
 
         {/* right card */}
@@ -211,4 +192,4 @@ function CustomerLogIn() {
   )
 }
 
-export default CustomerLogIn
+export default CustomerSignUp

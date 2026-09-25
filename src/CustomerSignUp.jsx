@@ -4,7 +4,10 @@ import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react'
 import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from './firebase'
 import { useNavigate } from 'react-router-dom'
-import './index.css'
+import backgroundImage from './assets/page_background.jpg'
+import googleLogo from './assets/G-logo.png'
+import logoImage from './assets/logo.jpg'
+
 
 function CustomerSignUp() {
   const [formData, setFormData] = useState({
@@ -50,17 +53,12 @@ function CustomerSignUp() {
       // Replace this with your actual signup request
       console.log(formData)
 
-            setStatus({
-          loading: false,
-          error: '',
-          success: 'Account created successfully!'
-        })
-
-        navigate("/dashboard")
-
-    } catch (err) {
-      console.error('Sign-up error:', err)
-
+      setStatus({
+        loading: false,
+        error: '',
+        success: 'Account created successfully!'
+      })
+    } catch {
       setStatus({
         loading: false,
         error: 'Something went wrong. Please try again.',
@@ -100,7 +98,7 @@ navigate("/dashboard")
     }
   }
 
-  // Forms and inputs
+  /* for the forms and inputs */
   const inputClass =
     "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-800"
 
@@ -108,7 +106,7 @@ navigate("/dashboard")
     <div
       className="h-screen w-full flex items-center justify-center p-6"
       style={{
-        backgroundImage: "url('src/assets/page_background.jpg')",
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundAttachment: "fixed",
         backgroundPosition: "center"
@@ -363,7 +361,7 @@ navigate("/dashboard")
               className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-3 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <img
-                src="src/assets/G-logo.png"
+                src={googleLogo}
                 alt="Google Icon"
                 className="google-icon h-4 w-4"
               />
@@ -400,7 +398,7 @@ navigate("/dashboard")
           <div
             style={{
               flex: 0.4,
-              backgroundImage: "url('src/assets/page_background.jpg')",
+              backgroundImage: `url(${backgroundImage})`,
               backgroundSize: "cover",
               backgroundAttachment: "fixed",
               backgroundPosition: "center",
@@ -412,7 +410,7 @@ navigate("/dashboard")
           <div className="relative z-10">
 
             <img
-              src="src/assets/logo.jpg"
+              src={logoImage}
               alt="Forrest Logo"
               className="w-[70px] h-[70px] rounded-full mb-6 mt-8"
             />
