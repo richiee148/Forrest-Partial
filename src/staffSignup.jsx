@@ -4,6 +4,8 @@ import './index.css'
 import googleImage from './assets/G-logo.png'
 import logoImage from './assets/logo.jpg'
 import backgroundImage from './assets/page_background.jpg'
+import { signInWithPopup } from "firebase/auth"
+import { auth, googleProvider } from "./firebase"
 
 // Stores information in the database
 function StaffSignup() {
@@ -14,6 +16,23 @@ function StaffSignup() {
 
   const [showPassword, setShowPassword] = useState(false)
   const [status, setStatus] = useState({ loading: false, error: '', success: '' })
+
+  const handleGoogleSignup = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+
+    const user = result.user;
+
+    console.log("Google Staff User:", user);
+
+    alert(`Welcome, ${user.displayName}!`);
+
+  } catch (error) {
+    console.error("Google Signup Error:", error);
+
+    alert("Google signup failed. Please try again.");
+  }
+};
 
   /* handles changes when the user inputs in the fields */
   const handleChange = (e) => {
@@ -140,6 +159,7 @@ function StaffSignup() {
 
             <button
               type="button"
+              onClick={handleGoogleSignup}
               className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-2"
             >
               <img src={googleImage} alt="Google Icon" className="google-icon h-4 w-4" />
@@ -148,7 +168,7 @@ function StaffSignup() {
 
             <p className="text-center text-xs text-gray-700">
               Don't have an account?{' '}
-              <a href="#" className="font-semibold text-green-800 underline hover:text-green-900">
+              <a href="/staff-login" className="font-semibold text-green-800 underline hover:text-green-900">
                 Login
               </a>
             </p>
