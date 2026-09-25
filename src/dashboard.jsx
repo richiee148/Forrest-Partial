@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/sidebar.jsx";
@@ -170,8 +171,19 @@ function CapsuleStatus({ rooms, onChangeStatus }) {
 }
 
 export default function Dashboard() {
-  const [active, setActive] = useState("Dashboard");
+  const navigate = useNavigate();
+  const location = useLocation();
   const [rooms, setRooms] = useState(INITIAL_ROOMS);
+
+  const active = location.pathname === "/customers" ? "Customers" : "Dashboard";
+
+  function handleNavigate(section) {
+    if (section === "Customers") {
+      navigate("/customers");
+      return;
+    }
+    navigate("/dashboard");
+  }
 
   function handleChangeStatus(roomId, status) {
     setRooms((prev) => prev.map((r) => (r.id === roomId ? { ...r, status } : r)));
@@ -183,7 +195,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen w-full bg-slate-50 text-slate-900">
-      <Sidebar active={active} onNavigate={setActive} />
+      <Sidebar active={active} onNavigate={handleNavigate} />
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header active={active} />
