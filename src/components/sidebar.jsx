@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { id: "Dashboard", label: "Dashboard", icon: LayoutGrid },
   { id: "Reservation", label: "Reservation", icon: BarChart3 },
   { id: "Capsule", label: "Capsule", icon: Users },
-  { id: "Guest", label: "Guest", icon: FileText },
+  { id: "Customers", label: "Customers", icon: FileText },
   { id: "Staff", label: "Staff", icon: Settings },
   { id: "Reports", label: "Reports", icon: Settings },
   { id: "Settings", label: "Settings", icon: Settings },

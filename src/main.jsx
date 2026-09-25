@@ -6,6 +6,7 @@ import './index.css'
 import CustomerLogIn from './CustomerLogIn.jsx'
 import CustomerSignUp from './CustomerSignUp.jsx'
 import Dashboard from './dashboard.jsx'
+import Customers from './Customers.jsx'
 import LandingPage from './landingPage.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
 
        
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/customers" element={<Customers />} />
 
         <Route path="*" element={<Navigate to="/landingPage" replace />} />
 
