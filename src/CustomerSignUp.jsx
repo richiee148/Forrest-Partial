@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react'
 import { signInWithPopup } from 'firebase/auth'
@@ -42,59 +41,45 @@ function CustomerSignUp() {
   // Handle normal form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    setStatus({
-      loading: true,
-      error: '',
-      success: ''
-    })
+    setStatus({ loading: true, error: '', success: '' })
 
     try {
-      // Replace this with your actual signup request
-      console.log(formData)
+      const res = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Sign up failed')
 
-      setStatus({
-        loading: false,
-        error: '',
-        success: 'Account created successfully!'
-      })
-    } catch {
-      setStatus({
-        loading: false,
-        error: 'Something went wrong. Please try again.',
-        success: ''
-      })
+      setStatus({ loading: false, error: '', success: 'Account created successfully!' })
+      navigate('/CustomerLogIn')
+    } catch (err) {
+      setStatus({ loading: false, error: err.message, success: '' })
     }
   }
 
   // Handle Google Sign-Up
   const handleGoogleSignUp = async () => {
-    setStatus({
-      loading: true,
-      error: '',
-      success: ''
-    })
+    setStatus({ loading: true, error: '', success: '' })
 
     try {
       const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
 
-      console.log('Google user:', result.user)
-
-            setStatus({
-        loading: false,
-        error: '',
-        success: `Welcome, ${result.user.displayName}!`
+      const res = await fetch('http://localhost:5000/api/auth/google-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
       })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Google sign-in failed')
 
-navigate("/dashboard")
+      setStatus({ loading: false, error: '', success: `Welcome, ${result.user.displayName}!` })
+      navigate('/dashboard')
     } catch (error) {
       console.error('Google sign-in error:', error)
-
-      setStatus({
-        loading: false,
-        error: 'Google sign-in failed. Please try again.',
-        success: ''
-      })
+      setStatus({ loading: false, error: error.message || 'Google sign-in failed. Please try again.', success: '' })
     }
   }
 
@@ -458,4 +443,3 @@ navigate("/dashboard")
 }
 
 export default CustomerSignUp
-

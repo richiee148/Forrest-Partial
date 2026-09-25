@@ -48,12 +48,15 @@ export default function LoginRoleSelector() {
               <button
                 key={id}
                 type="button"
-               onClick={() => {
+              onClick={() => {
                     if (id === "customer") {
                       navigate("/CustomerSignUp");
-                    } 
+                    }
                     if (id === "staff") {
                       navigate("/staffSignup");
+                    }
+                    if (id === "admin") {
+                      navigate("/adminLogin");
                     }
                   }}
                 className="w-full flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-6 text-left shadow-sm hover:shadow-md hover:bg-white transition"

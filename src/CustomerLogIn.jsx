@@ -16,12 +16,32 @@ function CustomerLogIn() {
   })
   const navigate = useNavigate()
 
-  // Handles Google Login authentication
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider)
-      console.log("Google user:", result.user)
-      alert(`Welcome back, ${result.user.displayName}!`)
+      const idToken = await result.user.getIdToken()
+
+      const res = await fetch('http://localhost:5000/api/auth/google-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Google login failed')
+
+      if (data.needsStaffCode) {
+        sessionStorage.setItem('pendingToken', data.tempToken)
+        navigate('/StaffCode')
+        return
+      }
+      if (data.needsAdminCode) {
+        alert('Admins must sign in on the admin page.')
+        return
+      }
+
+      sessionStorage.setItem('token', data.token)
+      sessionStorage.setItem('user', JSON.stringify(data.user))
+      navigate('/dashboard')
     } catch (error) {
       console.error("Google login error:", error)
       alert("Google login failed. Please try again.")
@@ -40,18 +60,31 @@ function CustomerLogIn() {
     })
   }
 
-  // handles form submission
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus({ loading: true, error: '', success: '' })
 
     try {
-    
-      console.log(formData)
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Login failed')
 
+      if (data.needsStaffCode) {
+        sessionStorage.setItem('pendingToken', data.tempToken)
+        navigate('/StaffCode')
+        return
+      }
+
+      sessionStorage.setItem('token', data.token)
+      sessionStorage.setItem('user', JSON.stringify(data.user))
       setStatus({ loading: false, error: '', success: 'Logged in successfully!' })
-    } catch {
-      setStatus({ loading: false, error: 'Something went wrong. Please try again.', success: '' })
+      navigate('/dashboard')
+    } catch (err) {
+      setStatus({ loading: false, error: err.message, success: '' })
     }
   }
 
@@ -119,7 +152,7 @@ function CustomerLogIn() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-800"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>
             </div>

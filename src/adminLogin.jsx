@@ -6,7 +6,7 @@ import logoImage from './assets/logo.jpg'
 import backgroundImage from './assets/page_background.jpg'
 
 // Stores information in the database
-function CustomerSignUp() {
+function adminLogin() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,7 +31,6 @@ function CustomerSignUp() {
     setStatus({ loading: true, error: '', success: '' })
 
     try {
-      // Replace this with your actual login request (e.g. fetch/axios call)
       console.log(formData)
 
       setStatus({ loading: false, error: '', success: 'Logged in successfully!' })
@@ -192,4 +191,4 @@ function CustomerSignUp() {
   )
 }
 
-export default CustomerSignUp
+export default adminLogin

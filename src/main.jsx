@@ -18,20 +18,20 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
      <Routes>
-        <Route path="/" element={<Navigate to="/CustomerSignUp" replace />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/staff-login" element={<StaffLogin />} />
-        <Route path="/staff-signup" element={<StaffSignup />} />
+        <Route path="/" element={<Navigate to="/landingPage" replace />} />
+        <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/staffLogin" element={<StaffLogin />} />
+        <Route path="/staffSignup" element={<StaffSignup />} />
         <Route path="/CustomerSignUp" element={<CustomerSignUp />} />
         <Route path="/CustomerLogIn" element={<CustomerLogIn />} />
-        <Route path="/customer-reset-password" element={<ResetPassword />} />
+        <Route path="/customerResetpass" element={<ResetPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/customer-verification" element={<VerifyCode />} />
+        <Route path="/customerVerification" element={<VerifyCode />} />
         <Route path="/verify-code" element={<VerifyCode />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/landingPage" element={<LandingPage />} />
-        <Route path="*" element={<Navigate to="/CustomerSignUp" replace />} />
+        <Route path="*" element={<Navigate to="/landingPage" replace />} />
     </Routes>
     </BrowserRouter>
   </StrictMode>,

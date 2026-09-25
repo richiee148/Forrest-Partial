@@ -72,6 +72,58 @@ app.post('/api/auth/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+app.post('/api/auth/admin-login', async (req, res) => {
+  try {
+    const { email, password, adminCode } = req.body;
+
+    const user = await User.findOne({
+      email: (email || '').toLowerCase()
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'Invalid email or password'
+      });
+    }
+
+    const passwordOk = await bcrypt.compare(password, user.password);
+
+    if (!passwordOk) {
+      return res.status(401).json({
+        message: 'Invalid email or password'
+      });
+    }
+
+    if (user.role !== 'admin') {
+      return res.status(403).json({
+        message: 'This account is not an administrator'
+      });
+    }
+
+    if (adminCode !== process.env.ADMIN_CODE) {
+      return res.status(401).json({
+        message: 'Invalid admin code'
+      });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+        role: user.role
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: 'Server error'
+    });
+  }
+});
 
 // GOOGLE SYNC: verifies the Firebase sign-in, then creates or finds the matching MongoDB user
 app.post('/api/auth/google-sync', async (req, res) => {
@@ -106,6 +158,7 @@ app.post('/api/auth/google-sync', async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         username: user.username,
+        role: user.role,
       },
     });
   } catch (err) {

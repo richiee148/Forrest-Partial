@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Mail, Lock, KeyRound } from 'lucide-react'
 import './index.css'
+import { useNavigate } from 'react-router-dom'
 import googleImage from './assets/G-logo.png'
 import logoImage from './assets/logo.jpg'
 import backgroundImage from './assets/page_background.jpg'
@@ -8,7 +9,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 // Stores information in the database
-function StaffLogin() {
+function staffLogin() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,22 +19,31 @@ function StaffLogin() {
   const [showPassword, setShowPassword] = useState(false)
   const [status, setStatus] = useState({ loading: false, error: '', success: '' })
 
-  const handleGoogleLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider)
+    const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
 
-    const user = result.user
+      const res = await fetch('http://localhost:5000/api/auth/google-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Google login failed')
 
-    console.log("Staff Google User:", user)
+      if (!data.needsStaffCode) {
+        alert('This Google account is not a staff account.')
+        return
+      }
 
-    alert(`Welcome back, ${user.displayName}!`)
-  } catch (error) {
-    console.error("Google login error:", error)
-
-    alert("Google login failed. Please try again.")
+      sessionStorage.setItem('pendingToken', data.tempToken)
+      navigate('/StaffCode')
+    } catch (error) {
+      console.error("Google login error:", error)
+      alert("Google login failed. Please try again.")
+    }
   }
-}
-
   /* handles changes when the user inputs in the fields */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -43,21 +53,46 @@ function StaffLogin() {
     })
   }
 
-  // handles form submission
+    const navigate = useNavigate()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus({ loading: true, error: '', success: '' })
 
     try {
-      // Replace this with your actual login request (e.g. fetch/axios call)
-      console.log(formData)
+      // Step 1: check email + password
+      const loginRes = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      })
+      const loginData = await loginRes.json()
+      if (!loginRes.ok) throw new Error(loginData.message || 'Login failed')
 
+      if (!loginData.needsStaffCode) {
+        throw new Error('This account is not a staff account')
+      }
+
+      // Step 2: check the staff code using the temporary token from step 1
+      const codeRes = await fetch('http://localhost:5000/api/auth/staff-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${loginData.tempToken}`,
+        },
+        body: JSON.stringify({ staffCode: formData.staffCode }),
+      })
+      const codeData = await codeRes.json()
+      if (!codeRes.ok) throw new Error(codeData.message || 'Invalid staff code')
+
+      sessionStorage.setItem('token', codeData.token)
+      sessionStorage.setItem('user', JSON.stringify(codeData.user))
       setStatus({ loading: false, error: '', success: 'Logged in successfully!' })
-    } catch {
-      setStatus({ loading: false, error: 'Something went wrong. Please try again.', success: '' })
+      navigate('/dashboard')
+    } catch (err) {
+      setStatus({ loading: false, error: err.message, success: '' })
     }
   }
-
   const inputClass =
     "w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-800"
 
@@ -216,4 +251,4 @@ function StaffLogin() {
   )
 }
 
-export default StaffLogin
+export default staffLogin
