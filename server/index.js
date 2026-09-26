@@ -167,6 +167,13 @@ app.post('/api/auth/google-sync', async (req, res) => {
   }
 });
 
+process.on('unhandledRejection', (reason) => {
+  console.error('UNHANDLED REJECTION:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+});
+
 app.listen(process.env.PORT || 5000, () =>
   console.log(`API running on http://localhost:${process.env.PORT || 5000}`)
 );
