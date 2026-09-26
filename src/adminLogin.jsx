@@ -149,19 +149,6 @@ function AdminLogin() {
               {status.loading ? 'Logging In...' : 'Log In'}
             </button>
 
-            <div className="flex items-center gap-3 my-1">
-              <div className="flex-1 h-px bg-gray-300"></div>
-              <span className="text-xs text-gray-400">or</span>
-              <div className="flex-1 h-px bg-gray-300"></div>
-            </div>
-
-            <button
-              type="button"
-              className="google-signup-button w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-3 text-xs font-medium hover:bg-gray-50 transition mb-2"
-            >
-              <img src={googleImage} alt="Google Icon" className="google-icon h-4 w-4" />
-              Continue with Google
-            </button>
 
           </form>
         </div>
