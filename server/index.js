@@ -100,7 +100,9 @@ app.post('/api/auth/admin-login', async (req, res) => {
       });
     }
 
-    if (adminCode !== process.env.ADMIN_CODE) {
+        if (adminCode !== process.env.ADMIN_CODE) {
+      console.log('SUBMITTED:', JSON.stringify(adminCode));
+      console.log('EXPECTED:', JSON.stringify(process.env.ADMIN_CODE));
       return res.status(401).json({
         message: 'Invalid admin code'
       });

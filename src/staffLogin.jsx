@@ -9,7 +9,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 // Stores information in the database
-function staffLogin() {
+function StaffLogin() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -251,4 +251,4 @@ function staffLogin() {
   )
 }
 
-export default staffLogin
+export default StaffLogin

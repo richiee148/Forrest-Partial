@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Mail, Lock, KeyRound } from 'lucide-react'
 import './index.css'
+import { useNavigate } from 'react-router-dom'
 import googleImage from './assets/G-logo.png'
 import logoImage from './assets/logo.jpg'
 import backgroundImage from './assets/page_background.jpg'
 
 // Stores information in the database
-function adminLogin() {
+function AdminLogin() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     adminCode: '',
   })
+  const navigate = useNavigate()
 
   const [showPassword, setShowPassword] = useState(false)
   const [status, setStatus] = useState({ loading: false, error: '', success: '' })
@@ -25,17 +27,24 @@ function adminLogin() {
     })
   }
 
-  // handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus({ loading: true, error: '', success: '' })
 
     try {
-      console.log(formData)
+      const res = await fetch('http://localhost:5000/api/auth/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      const data = await res.json()
+
+      if (!res.ok) throw new Error(data.message || 'Login failed')
 
       setStatus({ loading: false, error: '', success: 'Logged in successfully!' })
-    } catch {
-      setStatus({ loading: false, error: 'Something went wrong. Please try again.', success: '' })
+      navigate('/dashboard')   // change this path if Dashboard.jsx is routed elsewhere
+    } catch (err) {
+      setStatus({ loading: false, error: err.message, success: '' })
     }
   }
 
@@ -191,4 +200,4 @@ function adminLogin() {
   )
 }
 
-export default adminLogin
+export default AdminLogin

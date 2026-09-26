@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import backgroundImage from './assets/page_background.jpg'
 import logoImage from './assets/logo.jpg'
 
-function staffSignup() {
+function StaffSignup() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -211,4 +211,4 @@ function staffSignup() {
   )
 }
 
-export default staffSignup
+export default StaffSignup
