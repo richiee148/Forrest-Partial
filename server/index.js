@@ -27,6 +27,19 @@ const User = mongoose.model('User', new mongoose.Schema({
   role:      { type: String, enum: ['customer', 'staff', 'admin'], default: 'customer' },
 }, { timestamps: true }));
 
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({ role: 'customer' })
+      .select('firstName lastName email username createdAt')
+      .sort({ createdAt: -1 });
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.post('/api/auth/signup', async (req, res) => {

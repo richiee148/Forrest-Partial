@@ -1,55 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Header from "./components/Header.jsx";
 import Sidebar from "./components/sidebar.jsx";
-
-// Replace this with data from your database (e.g. via an API call in useEffect,
-// a React Query hook, or props passed down from a server component).
-// Each entry represents one customer's reservation history summary.
-// status must be one of: "active" | "checked-out" | "upcoming"
-const INITIAL_RESERVATIONS = [
-  {
-    id: 1,
-    name: "Maria Santos",
-    email: "maria.santos@example.com",
-    totalStays: 12,
-    lastVisit: "2026-09-18",
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "James Cooper",
-    email: "james.cooper@example.com",
-    totalStays: 3,
-    lastVisit: "2026-09-10",
-    status: "checked-out",
-  },
-  {
-    id: 3,
-    name: "Aiko Tanaka",
-    email: "aiko.tanaka@example.com",
-    totalStays: 7,
-    lastVisit: "2026-09-22",
-    status: "active",
-  },
-  {
-    id: 4,
-    name: "Liam O'Brien",
-    email: "liam.obrien@example.com",
-    totalStays: 1,
-    lastVisit: "2026-09-25",
-    status: "upcoming",
-  },
-  {
-    id: 5,
-    name: "Priya Nair",
-    email: "priya.nair@example.com",
-    totalStays: 5,
-    lastVisit: "2026-08-30",
-    status: "checked-out",
-  },
-];
 
 const STATUS_CONFIG = {
   active: { label: "Active", dot: "bg-blue-500", text: "text-blue-700" },
@@ -58,12 +11,13 @@ const STATUS_CONFIG = {
 };
 
 function formatDate(dateStr) {
+  if (!dateStr) return "—";
   const date = new Date(dateStr);
   if (Number.isNaN(date.getTime())) return dateStr;
   return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
-function ReservationsTable({ reservations }) {
+function ReservationsTable({ reservations, loading, error }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
@@ -83,7 +37,19 @@ function ReservationsTable({ reservations }) {
           </tr>
         </thead>
         <tbody>
-          {reservations.length === 0 ? (
+          {loading ? (
+            <tr>
+              <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-400">
+                Loading...
+              </td>
+            </tr>
+          ) : error ? (
+            <tr>
+              <td colSpan={5} className="px-4 py-10 text-center text-sm text-red-500">
+                {error}
+              </td>
+            </tr>
+          ) : reservations.length === 0 ? (
             <tr>
               <td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-400">
                 No data yet
@@ -117,7 +83,10 @@ function ReservationsTable({ reservations }) {
 export default function Customers() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [reservations] = useState(INITIAL_RESERVATIONS);
+
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const active = location.pathname === "/customers" ? "Customers" : "Dashboard";
 
@@ -125,15 +94,28 @@ export default function Customers() {
     navigate(section === "Customers" ? "/customers" : "/dashboard");
   }
 
-  // To connect to a real database later, swap the static state above for
-  // something like:
-  //
-  // const [reservations, setReservations] = useState([]);
-  // useEffect(() => {
-  //   fetch("/api/reservations")
-  //     .then((res) => res.json())
-  //     .then(setReservations);
-  // }, []);
+  useEffect(() => {
+    setLoading(true);
+    fetch("http://localhost:5000/api/users")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load customers");
+        return res.json();
+      })
+      .then((users) => {
+        const mapped = users.map((u) => ({
+          id: u._id,
+          name: `${u.firstName} ${u.lastName}`,
+          email: u.email,
+          totalStays: 0,        // no reservation data yet — placeholder
+          lastVisit: u.createdAt, // placeholder until you have real visit data
+          status: "upcoming",   // placeholder until you track reservation status
+        }));
+        setReservations(mapped);
+        setError("");
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="flex h-screen w-full bg-slate-50 text-slate-900">
@@ -143,7 +125,7 @@ export default function Customers() {
         <Header active={active} />
 
         <main className="flex-1 overflow-y-auto p-6">
-          <ReservationsTable reservations={reservations} />
+          <ReservationsTable reservations={reservations} loading={loading} error={error} />
         </main>
       </div>
     </div>
